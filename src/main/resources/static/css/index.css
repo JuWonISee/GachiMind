@@ -1,0 +1,96 @@
+#wrapper{
+    width: 1200px;
+    height: 800px;
+    background-color: red;
+    margin: auto;
+}
+
+#header{
+    width: 100%;
+    height: 100px;
+    background-color: aquamarine;
+    text-align: center;
+    line-height: 100px;
+}
+#header h2{
+    margin: 0px;
+}
+
+#asideLeft, #asideRight{
+    width: 200px;
+    height: 600px;
+    background-color: greenyellow;
+    float: left;
+    box-sizing: border-box;
+}
+
+#quiz{
+    background-color: aqua;
+    height: 100px;
+}
+
+#time{
+    background-color: brown;
+    height: 100px;
+}
+
+#user{
+    height: 400px;
+    background-color: bisque;
+}
+
+#content{
+    width: 800px;
+    height: 600px;
+    background-color: azure;
+    float: left;
+}
+
+#bottom{
+    width: 100%;
+    height: 100px;
+    background-color: aquamarine;
+    clear: both;
+    text-align: center;
+    line-height: 130px;
+}
+
+#bottom input[type = "range"]{
+    display: inline-block;
+    width: 200px;
+    height: 50px;
+    margin: 0px, 10px;
+}
+
+#bottom button{
+    display: inline-block;
+    width: 50px;
+    height: 50px;
+    border-radius: 20px;
+    margin: 0px, 10px;
+}
+
+#eraser{
+    background-image: url("../image/eraser.png");
+    background-size: cover;
+    background-color: aquamarine;
+}
+
+#refresh{
+    background-image: url("../image/refresh.png");
+    background-size: cover;
+    background-color: aquamarine;
+    border-radius: 50px;
+}
+
+#msgArea{
+    width: 100%;
+    height: 550px;
+}
+
+#msg{
+    width: 100%;
+    height: 50px;
+    border: 1px solid rgb(101, 97, 97);
+    border-radius: 10px;
+}
