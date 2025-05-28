@@ -13,6 +13,7 @@ import java.util.List;
 @Component
 @Log4j2
 public class ChatHandler extends TextWebSocketHandler {
+    private static final int MAX_USERS = 3;
     private static List<WebSocketSession> list = new ArrayList<WebSocketSession>();
 
     @Override
@@ -21,12 +22,20 @@ public class ChatHandler extends TextWebSocketHandler {
         log.info("payload : " + payload);
 
         for(WebSocketSession session1 : list) {
-            session1.sendMessage(new TextMessage(payload));
+            if(session1.isOpen()) {
+                session1.sendMessage(new TextMessage(payload));
+            }
         }
     }
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        if(list.size() >= MAX_USERS) {
+            log.info(session + "접속 거부 : 최대 접속 인원 초과");
+            session.close(CloseStatus.POLICY_VIOLATION.withReason("최대 접속 인원 초과"));
+            return;
+        }
+
         list.add(session);
         log.info(session + "클라이언트 접속");
     }
