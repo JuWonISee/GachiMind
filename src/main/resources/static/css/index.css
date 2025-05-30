@@ -10,20 +10,23 @@
     height: 100px;
     background-color: aquamarine;
     text-align: center;
-    line-height: 100px;
+    justify-content: center;
+    align-items: center;
+    display: flex;
 }
 #header h2{
     margin: 0px;
-    size: 50px;
-    
+    font-size: 50px;
+    line-height: 100px;
 }
 
-#asideLeft, #asideRight{
+#asideLeft{
     width: 200px;
     height: 600px;
-    background-color: greenyellow;
+    background-color: white;
     float: left;
     box-sizing: border-box;
+    overflow: hidden;
 }
 
 #msgArea{
@@ -34,16 +37,51 @@
 #quiz{
     background-color: aqua;
     height: 100px;
+    /* font-size: 50px; */
+    font-size: 28px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    font-weight: bold;
+    border-radius: 10px;
 }
 
-#time{
-    background-color: brown;
+#inputBox{
+    width: 100%;
     height: 100px;
+    overflow: hidden;
 }
+
+#quizInput{
+    background-color: plum;
+    width: 100%;
+    height: 100px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    font-weight: bold;
+    font-size: 50px;
+    border: 0px;
+    border-radius: 10px;
+
+    transition-duration: 0.1s;
+}
+
 
 #user{
     height: 400px;
     background-color: bisque;
+    overflow: scroll;
+}
+
+#asideRight{
+    width: 200px;
+    height: 600px;
+    background-color: rgb(214, 208, 208);
+    float: left;
+    box-sizing: border-box;
 }
 
 #content{

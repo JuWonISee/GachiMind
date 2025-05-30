@@ -11,60 +11,134 @@
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script src="../js/CanvasApp.js"></script>
     <script src="../js/ChatClient.js"></script>
-    <script src="../js/common.js"></script>
 <script>
-    let app;
+    let canvasApp;
     let username;
-    let socket;
     let chatClient;
+    let currentQuiz;
+    let quizTurn;
+    let currentQuizPlayer;
 
-    function setNickname(){
-        username = prompt("닉네임을 입력해주세요");
-
-        while(username == null || username.trim() == ""){
-            username = prompt("닉네임을 입력해주세요.");
-        }
-    }
-    
     function init(){
         setNickname();
 
-        chatClient = new ChatClient({
-            username : username,
-            url : "ws://localhost:8080/ws/chat",
-            msgInputId : "msg",
-            msgAreaId : "msgArea"
-        });
+        chatClient = new ChatClient(username, "ws://35.209.212.205:8080/ws/chat", "msg", "msgArea");
 
-        app = new CanvasApp("canvas", "range", chatClient);
+        canvasApp = new CanvasApp("canvas", "range", chatClient);
+
         clearAll();
         colorChange("black");
 
-        app.setLinewidth(document.getElementById("range").value);
+        canvasApp.setLinewidth(document.getElementById("range").value);
 
-        //추가한거임
+        resizeEvent();
+
+        canvasRemoteEvent();
+    }
+
+    window.addEventListener("load", () => {
+        setNicknameAndConnect();
+
+        document.getElementById('quizInput').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                const quiz = event.target.value.trim();
+                if (!quiz) return;
+
+                chatClient.sendQuizInput(quiz);
+                event.target.value = '';
+            }
+        });
+    });
+
+    function colorChange(color){
+        canvasApp.setColor(color);
+        canvasApp.setCursor(color);
+    }
+
+    function setNicknameAndConnect() {
+        let input = null;
+        
+        do {
+            input = prompt("닉네임을 입력해주세요.");
+        } while (!input || input.trim() === "");
+
+        username = input.trim();
+
+        // 기존 인스턴스 제거
+        if (chatClient) {
+            chatClient.disconnect();
+            chatClient = null;
+        }
+
+        chatClient = new ChatClient(username, "ws://localhost/ws/chat", "msg", "msgArea");
+
+        // 기존 캔버스 앱 제거 (있다면)
+        if (canvasApp) {
+            canvasApp.clearAll();  // 필요 시 내부 WebSocket 이벤트도 끊도록 수정 가능
+            canvasApp = null;
+        }
+
+        canvasApp = new CanvasApp("canvas", "range", chatClient);
+        clearAll();
+        colorChange("black");
+        canvasApp.setLinewidth(document.getElementById("range").value);
+        resizeEvent();
+        canvasRemoteEvent();
+    }
+
+    //화면 사이즈 변경시 그려지는 좌표 변경
+    function resizeEvent(){
+        window.addEventListener("resize", (e) =>{
+        canvasApp.setRect();
+        });
+    }
+
+    //멀티태스킹 이벤트 반영
+    function canvasRemoteEvent(){
         chatClient.onCanvasEvent = function(data){
-            app.processRemoteCanvasEvent(data);
+            canvasApp.processRemoteCanvasEvent(data);
         }
     }
 
-    function colorChange(color){
-        app.setColor(color);
-        app.setCursor(color);
-    }
-
     function clearAll(){
-        app.clearAll();
+        canvasApp.clearAll();
 
         if(chatClient){
             chatClient.sendCanvasEvent({action: "clear"});
         }
     }
 
-    window.addEventListener("load", () => {
-        init();
-    });
+    function toggleDrawingUI(enabled) {
+        // 캔버스 활성/비활성 (그리기 가능 여부)
+        document.getElementById("canvas").style.pointerEvents = enabled ? "auto" : "none";
+        // document.getElementById("canvas").style.opacity = enabled ? "1" : "0.5";
 
+        // 퀴즈 입력칸 (문제 출제용)
+        document.getElementById("quizInput").disabled = !enabled;
+
+        // 선 굵기 조절 슬라이더
+        document.getElementById("range").disabled = !enabled;
+
+        // 색상 버튼들
+        const colorButtons = document.querySelectorAll("#bottom button:not(#refresh)"); // #refresh 제외
+        colorButtons.forEach(btn => btn.disabled = !enabled);
+
+        // 초기화 버튼 (전체 지우기)
+        document.getElementById("refresh").disabled = !enabled;
+
+        // 하단 버튼 영역 투명도 조절
+        document.getElementById("bottom").style.opacity = enabled ? "1" : "0.5";
+
+        // 채팅 입력창은 항상 활성화 (단, 버튼만 제외)
+        document.getElementById("msg").disabled = false;
+    }
+
+    function toggleHostInputUI(enabled){
+        // 퀴즈 입력칸 (문제 출제용)
+        document.getElementById("quizInput").disabled = !enabled;
+    }
+
+    
 </script>
 <body>
     <div id="wrapper">
@@ -73,7 +147,7 @@
         </div>
         <div id="asideLeft">
             <div id="quiz"></div>
-            <div id="time"></div>
+            <input type="text" id="quizInput" placeholder="문제">
             <div id="user"></div>
         </div>
         <div id="content">

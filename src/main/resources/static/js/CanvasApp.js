@@ -9,12 +9,16 @@ class CanvasApp{
             y : -1
         };
 
-        this.chatClient = chatClient; //추가한거임임
-
+        this.chatClient = chatClient;
         
         this.initEvents();
 
         if(rangeId){ this.initRange(rangeId); }
+    }
+    
+    //화면 사이즈 변경시 그려지는 좌표 변경
+    setRect(){
+        this.rect = this.canvas.getBoundingClientRect();
     }
 
     initRange(rangeId){
@@ -24,7 +28,7 @@ class CanvasApp{
             range.addEventListener("input", () => {
                 const width = parseFloat(range.value);
                 this.setLinewidth(width);
-            })
+            });
         } 
     }
 
@@ -158,7 +162,6 @@ class CanvasApp{
 
     setCursor(color){
         if(color == "white"){
-            console.log("white")
             this.canvas.style.cursor = "url('../image/eraserCursor.png') 5 0, auto";
         }else{
             this.canvas.style.cursor = "url('../image/pencil.png'), auto";
@@ -169,8 +172,6 @@ class CanvasApp{
         this.ctx.clearRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
         this.ctx.fillStyle = "white";
         this.ctx.fillRect(0, 0, this.canvas.clientWidth, this.canvas.clientHeight);
-
-
     }
 
     setLinewidth(width){
